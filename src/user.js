@@ -36,6 +36,9 @@ var UserBox = React.createClass({
       }.bind(this)
     });
   },
+  handleClick: function(){
+  	this.setState({singup: !this.state.singup});
+  },
   handleSingUp: function(user){
   	$.ajax({
       url: this.props.url,
@@ -67,13 +70,12 @@ var UserBox = React.createClass({
       }.bind(this)
     });
   },
-  render: function() {
-    return (
+  render: function() { 
+    return ( 
       <div className="userBox">
         <h1> User</h1>
    		{ this.state.user ? <h2> {this.state.user.username} </h2> : null }
-   		{ this.state.login ? <Logout onLogout={this.handleLogout}/> : <Login onLogin={this.handleLogin} /> }   
-   		{ this.state.singup ? null : <SingUp onSingUp={this.handleSingUp}/> }
+   		{ this.state.login ? <Logout onLogout={this.handleLogout}/> : <div><Login onLogin={this.handleLogin} singup={this.state.singup} handleClick={this.handleClick}/> <SingUp onSingUp={this.handleSingUp} singup={this.state.singup} handleClick={this.handleClick}/></div>}
       </div>
     );
   }
@@ -85,18 +87,26 @@ var Login = React.createClass({
 		var email = React.findDOMNode(this.refs.email).value.trim();
     	var password = React.findDOMNode(this.refs.password).value.trim();
 		this.props.onLogin({email: email, password: password});
-		console.log("chao");
+		return
+	},
+	handleClick: function  (e) {
+		e.preventDefault();
+		this.props.handleClick();
 		return
 	},
 	render: function() {
-		return (
-			<div>
-				<h2> Login </h2>
-				<form className="loginForm" onSubmit={this.handleSubmit}>
+		var form = <form className="loginForm" onSubmit={this.handleSubmit}>
 	        		<input type="text" placeholder="Email" ref="email" />
 	        		<input type="password" placeholder="password" ref="password" />
 	        		<input type="submit" value="Login" />
-	      		</form>
+	      		</form>;
+	    var link = <a href="#" onClick={this.handleClick}>Login</a>;
+		return (
+			<div>
+				<h2> Login </h2>
+				
+				{ this.props.singup ? link : form }
+	      	
 	      	</div>
 		);
 	}
@@ -133,17 +143,25 @@ var SingUp = React.createClass({
 		
 		return
 	},
+	handleClick: function  (e) {
+		e.preventDefault();
+		this.props.handleClick();
+		return
+	},
 	render: function() {
-		return (
-			<div className="singUp">
-				<h2> SingUp </h2>
-				<form className="singUpForm" onSubmit={this.handleSubmit}>
+		var form =<form className="singUpForm" onSubmit={this.handleSubmit}>
 	        		<input type="text" placeholder="User Name" ref="username" />
 	        		<input type="text" placeholder="Email" ref="email" />
 	        		<input type="password" placeholder="password" ref="password" />
 	        		<input type="password" placeholder="Confirm password" ref="confirm_password" />
 	        		<input type="submit" value="SingUp" />
-	      		</form>
+	      		</form>;
+	    var link = <a href="#" onClick={this.handleClick}>Singup</a>; 
+		return (
+			<div className="singUp">
+				<h2> Singup </h2>
+				{ this.props.singup ? form : link }
+				
 	      	</div>
 		);
 	}
