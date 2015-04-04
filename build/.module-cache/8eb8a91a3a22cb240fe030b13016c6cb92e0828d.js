@@ -1,4 +1,4 @@
-var UserBox = React.createClass({
+var UserBox = React.createClass({displayName: "UserBox",
   getInitialState: function() {
   	return {login : false, user: null, singup: false}
   },
@@ -58,7 +58,6 @@ var UserBox = React.createClass({
       type: 'POST',
       success: function(data) {
         this.setState({login: false});
-        this.setState({singup: false});
         this.setState({user: null});
         console.log(data);
       }.bind(this),
@@ -69,17 +68,18 @@ var UserBox = React.createClass({
   },
   render: function() {
     return (
-      <div className="userBox">
-        <h1> User</h1>
-   		{ this.state.user ? <h2> {this.state.user.username} </h2> : null }
-   		{ this.state.login ? <Logout onLogout={this.handleLogout}/> : <Login onLogin={this.handleLogin} /> }   
-   		{ this.state.singup ? null : <SingUp onSingUp={this.handleSingUp}/> }
-      </div>
+      React.createElement("div", {className: "userBox"}, 
+        React.createElement("h1", null, " User"), 
+   		 this.state.user ? React.createElement("h2", null, " ", this.state.user.username, " ") : null, 
+   		React.createElement("h2", null, " Login "), 
+   		 this.state.login ? React.createElement(Logout, {onLogout: this.handleLogout}) : React.createElement(Login, {onLogin: this.handleLogin}), 
+   		 this.state.singup ? null : React.createElement(SingUp, {onSingUp: this.handleSingUp})
+      )
     );
   }
 });
 
-var Login = React.createClass({
+var Login = React.createClass({displayName: "Login",
 	handleSubmit: function(e) {
 		e.preventDefault();
 		var email = React.findDOMNode(this.refs.email).value.trim();
@@ -90,21 +90,18 @@ var Login = React.createClass({
 	},
 	render: function() {
 		return (
-			<div>
-				<h2> Login </h2>
-				<form className="loginForm" onSubmit={this.handleSubmit}>
-	        		<input type="text" placeholder="Email" ref="email" />
-	        		<input type="password" placeholder="password" ref="password" />
-	        		<input type="submit" value="Login" />
-	      		</form>
-	      	</div>
+			React.createElement("form", {className: "loginForm", onSubmit: this.handleSubmit}, 
+        		React.createElement("input", {type: "text", placeholder: "Email", ref: "email"}), 
+        		React.createElement("input", {type: "password", placeholder: "password", ref: "password"}), 
+        		React.createElement("input", {type: "submit", value: "Login"})
+      		)
 		);
 	}
 });
 
 
 
-var Logout = React.createClass({
+var Logout = React.createClass({displayName: "Logout",
 	handleSubmit: function(e) {
 		e.preventDefault();
 		this.props.onLogout();
@@ -112,44 +109,37 @@ var Logout = React.createClass({
 	},
 	render: function() {
 		return (
-			<form className="loginForm" onSubmit={this.handleSubmit}>
-        		<input type="submit" value="Logout" />
-      		</form>
+			React.createElement("form", {className: "loginForm", onSubmit: this.handleSubmit}, 
+        		React.createElement("input", {type: "submit", value: "Logout"})
+      		)
 		);
 	}
 });
 
-var SingUp = React.createClass({
+var SingUp = React.createClass({displayName: "SingUp",
 	handleSubmit: function(e) {
 		e.preventDefault();
-		var username = React.findDOMNode(this.refs.username).value.trim();
 		var email = React.findDOMNode(this.refs.email).value.trim();
     	var password = React.findDOMNode(this.refs.password).value.trim();
-		var confirm_password = React.findDOMNode(this.refs.confirm_password).value.trim();
-		if (password == confirm_password) {
-			this.props.onSingUp({username: username, email: email, password: password});
-
-		};
-		
+		this.props.onSingUp({email: email, password: password});
 		return
 	},
 	render: function() {
 		return (
-			<div className="singUp">
-				<h2> SingUp </h2>
-				<form className="singUpForm" onSubmit={this.handleSubmit}>
-	        		<input type="text" placeholder="User Name" ref="username" />
-	        		<input type="text" placeholder="Email" ref="email" />
-	        		<input type="password" placeholder="password" ref="password" />
-	        		<input type="password" placeholder="Confirm password" ref="confirm_password" />
-	        		<input type="submit" value="SingUp" />
-	      		</form>
-	      	</div>
+			React.createElement("div", null, 
+				React.createElement("h2", null, " SingUp "), 
+				React.createElement("form", {className: "singUpForm", onSubmit: this.handleSubmit}, 
+	        		React.createElement("input", {type: "text", placeholder: "Email", ref: "email"}), 
+	        		React.createElement("input", {type: "password", placeholder: "password", ref: "password"}), 
+	        		React.createElement("input", {type: "password", placeholder: "Confirm password", ref: "confirm_password"}), 
+	        		React.createElement("input", {type: "submit", value: "SingUp"})
+	      		)
+	      	)
 		);
 	}
 });
 
 React.render(
-  <UserBox url="http://localhost:3000/api/Friends"/>,
+  React.createElement(UserBox, {url: "http://localhost:3000/api/Users"}),
   document.getElementById('content')
 );
